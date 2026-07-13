@@ -20,15 +20,15 @@ export default function QuestCard({ quest, completed, uploading, onUpload }: Que
 
   return (
     <div
-      className={`flex items-center gap-3 p-3 rounded-xl border transition-colors ${
-        completed ? 'bg-hanok-gold/10 border-hanok-gold' : 'bg-white border-hanok-tile/20'
+      className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
+        completed ? 'bg-primary/10 border-primary' : 'bg-card border-border'
       }`}
     >
-      <div className="flex items-center justify-center w-7 h-7 rounded-full bg-hanok-wood text-white text-xs font-bold shrink-0">
+      <div className="flex items-center justify-center w-7 h-7 rounded-full bg-secondary text-secondary-foreground text-xs font-bold shrink-0">
         {quest.order}
       </div>
 
-      <p className="flex-1 text-sm text-hanok-ink leading-snug">{quest.title}</p>
+      <p className="flex-1 text-sm text-card-foreground leading-snug">{quest.title}</p>
 
       <input
         ref={inputRef}
@@ -44,7 +44,7 @@ export default function QuestCard({ quest, completed, uploading, onUpload }: Que
         disabled={uploading}
         onClick={() => inputRef.current?.click()}
         className={`shrink-0 flex items-center justify-center w-10 h-10 rounded-full ${
-          completed ? 'bg-hanok-terracotta text-white' : 'bg-hanok-ink/5 text-hanok-ink'
+          completed ? 'bg-accent text-accent-foreground' : 'bg-muted text-muted-foreground'
         } active:scale-95 transition-transform disabled:opacity-50`}
         aria-label="사진 첨부"
       >
