@@ -5,6 +5,7 @@ export interface Quest {
   regionSlug: RegionSlug
   order: number
   title: string
+  description: string
 }
 
 export interface Submission {
