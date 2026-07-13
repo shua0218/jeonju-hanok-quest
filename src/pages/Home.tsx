@@ -1,56 +1,106 @@
 import { Link } from 'react-router-dom'
-import { MapPin, ArrowRight } from 'lucide-react'
+import { MapPin, Camera, Gift, ChevronRight } from 'lucide-react'
+
+const steps = [
+  { icon: MapPin, title: '퀘스트 장소 방문', desc: '1구역 또는 2구역의\n퀘스트 장소를 방문하세요' },
+  { icon: Camera, title: '인증사진 촬영', desc: '퀘스트에 맞는\n인증사진을 찍어 올려주세요' },
+  { icon: Gift, title: '상품권 수령', desc: '3개 이상 인증 시\n지역상품권을 드립니다' },
+]
+
+const regions = [
+  {
+    slug: 'region1',
+    name: '1구역',
+    desc: '완판본문화관 · 한벽문화관 · 전주천',
+    image: 'https://picsum.photos/seed/hanok1/800/600',
+    count: 10,
+  },
+  {
+    slug: 'region2',
+    name: '2구역',
+    desc: '공예품전시관 · 오목대 · 전주향교',
+    image: 'https://picsum.photos/seed/hanok2/800/600',
+    count: 10,
+  },
+]
 
 export default function Home() {
   return (
-    <div className="min-h-screen w-full max-w-md mx-auto bg-hanok-bg flex flex-col px-5 pt-14 pb-8">
-      <div className="text-center mb-10">
-        <p className="text-hanok-terracotta font-semibold text-sm mb-1">전주한옥마을</p>
-        <h1 className="text-2xl font-extrabold text-hanok-ink">QUEST</h1>
-        <p className="text-sm text-hanok-ink/70 mt-3 leading-relaxed">
-          외곽 지역을 걸으며 퀘스트를 완료하고
-          <br />
-          지역 상품권을 받아가세요
-        </p>
+    <div className="mobile-container bg-background flex flex-col">
+      <div className="relative h-64 w-full overflow-hidden">
+        <img
+          src="https://picsum.photos/seed/hanokhero/800/600"
+          alt="전주한옥마을"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+        <div className="absolute bottom-5 left-5 right-5">
+          <p className="text-primary font-bold text-sm mb-1">전주한옥마을</p>
+          <h1 className="text-foreground text-3xl font-extrabold tracking-tight">QUEST</h1>
+          <p className="text-foreground/70 text-sm mt-1">외곽지역을 탐험하고 상품권 받자!</p>
+        </div>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <Link
-          to="/region1"
-          className="flex items-center justify-between p-5 rounded-2xl bg-white border border-hanok-tile/20 shadow-sm active:scale-[0.98] transition-transform"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-full bg-hanok-wood/10 flex items-center justify-center">
-              <MapPin size={20} className="text-hanok-wood" />
-            </div>
-            <div>
-              <p className="font-bold text-hanok-ink">1구역</p>
-              <p className="text-xs text-hanok-ink/60">완판본문화관 · 한벽문화관 · 전주천</p>
-            </div>
-          </div>
-          <ArrowRight size={18} className="text-hanok-ink/40" />
-        </Link>
-
-        <Link
-          to="/region2"
-          className="flex items-center justify-between p-5 rounded-2xl bg-white border border-hanok-tile/20 shadow-sm active:scale-[0.98] transition-transform"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-full bg-hanok-terracotta/10 flex items-center justify-center">
-              <MapPin size={20} className="text-hanok-terracotta" />
-            </div>
-            <div>
-              <p className="font-bold text-hanok-ink">2구역</p>
-              <p className="text-xs text-hanok-ink/60">공예품전시관 · 오목대 · 전주향교</p>
-            </div>
-          </div>
-          <ArrowRight size={18} className="text-hanok-ink/40" />
-        </Link>
+      <div className="px-5 py-6">
+        <h2 className="text-sm font-bold text-muted-foreground mb-3">이용 방법</h2>
+        <div className="grid grid-cols-3 gap-3">
+          {steps.map((step) => {
+            const Icon = step.icon
+            return (
+              <div
+                key={step.title}
+                className="flex flex-col items-center text-center bg-card border border-border rounded-lg p-3"
+              >
+                <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center mb-2">
+                  <Icon size={16} className="text-primary" />
+                </div>
+                <p className="text-xs font-semibold text-card-foreground mb-1">{step.title}</p>
+                <p className="text-[10px] text-muted-foreground leading-tight whitespace-pre-line">
+                  {step.desc}
+                </p>
+              </div>
+            )
+          })}
+        </div>
       </div>
 
-      <p className="text-center text-xs text-hanok-ink/40 mt-auto pt-10">
-        각 구역별 퀘스트 10개 중 3개를 완료하면 지역 상품권을 드립니다
-      </p>
+      <div className="px-5 pb-10">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-bold text-muted-foreground">구역 선택</h2>
+          <span className="text-xs text-accent font-semibold">
+            3개 이상 인증 시 상품권 지급!
+          </span>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          {regions.map((region) => (
+            <Link
+              key={region.slug}
+              to={`/${region.slug}`}
+              className="relative rounded-lg overflow-hidden h-36 border border-border block active:scale-[0.98] transition-transform"
+            >
+              <img
+                src={region.image}
+                alt={region.name}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+
+              <span className="absolute top-3 right-3 bg-primary text-primary-foreground text-xs font-bold px-2.5 py-1 rounded-full">
+                퀘스트 {region.count}개
+              </span>
+
+              <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
+                <div>
+                  <p className="text-white font-bold text-lg leading-tight">{region.name}</p>
+                  <p className="text-white/80 text-[11px] mt-0.5">{region.desc}</p>
+                </div>
+                <ChevronRight className="text-white shrink-0" size={20} />
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
