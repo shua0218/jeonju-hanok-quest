@@ -55,24 +55,24 @@ export default function Region() {
   const regionLabel = regionSlug === 'region1' ? '1구역' : '2구역'
 
   return (
-    <div className="min-h-screen w-full max-w-md mx-auto bg-hanok-bg pb-10">
-      <div className="sticky top-0 z-10 bg-hanok-bg/95 backdrop-blur px-4 pt-5 pb-3 border-b border-hanok-tile/10">
+    <div className="mobile-container bg-background pb-10">
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur px-4 pt-5 pb-3 border-b border-border">
         <div className="flex items-center gap-2 mb-3">
           <Link to="/" aria-label="뒤로가기">
-            <ChevronLeft size={22} className="text-hanok-ink" />
+            <ChevronLeft size={22} className="text-foreground" />
           </Link>
-          <h1 className="text-lg font-bold text-hanok-ink">{regionLabel} 퀘스트</h1>
+          <h1 className="text-lg font-bold text-foreground">{regionLabel} 퀘스트</h1>
         </div>
         <ProgressBar completed={completedCount} total={quests.length} required={REQUIRED_COUNT} />
         {claimed && (
-          <p className="text-xs font-semibold text-hanok-terracotta mt-2">
+          <p className="text-xs font-semibold text-accent mt-2">
             상품권 신청이 완료되었습니다. 곧 연락드릴게요!
           </p>
         )}
         {!claimed && eligible && (
           <button
             onClick={() => setShowPhoneModal(true)}
-            className="w-full mt-3 py-2.5 rounded-xl bg-hanok-terracotta text-white text-sm font-bold active:scale-95 transition-transform"
+            className="w-full mt-3 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-bold active:scale-95 transition-transform"
           >
             상품권 신청하기
           </button>
