@@ -1,15 +1,16 @@
 import { useRef } from 'react'
-import { Camera, CheckCircle2, Loader2 } from 'lucide-react'
+import { Camera, Check, Loader2 } from 'lucide-react'
 import { Quest } from '../types'
 
 interface QuestCardProps {
   quest: Quest
   completed: boolean
+  photoUrl?: string
   uploading: boolean
   onUpload: (file: File) => void
 }
 
-export default function QuestCard({ quest, completed, uploading, onUpload }: QuestCardProps) {
+export default function QuestCard({ quest, completed, photoUrl, uploading, onUpload }: QuestCardProps) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -19,16 +20,36 @@ export default function QuestCard({ quest, completed, uploading, onUpload }: Que
   }
 
   return (
-    <div
-      className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
-        completed ? 'bg-primary/10 border-primary' : 'bg-card border-border'
-      }`}
-    >
-      <div className="flex items-center justify-center w-7 h-7 rounded-full bg-secondary text-secondary-foreground text-xs font-bold shrink-0">
-        {quest.order}
+    <div className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border shadow-sm">
+      <div className="relative shrink-0">
+        {completed && photoUrl ? (
+          <img
+            src={photoUrl}
+            alt={quest.title}
+            className="w-12 h-12 rounded-full object-cover border-2 border-primary"
+          />
+        ) : (
+          <div
+            className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold ${
+              completed ? 'bg-primary/15 text-primary border-2 border-primary' : 'bg-muted text-muted-foreground'
+            }`}
+          >
+            {quest.order}
+          </div>
+        )}
+        {completed && (
+          <span className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-primary flex items-center justify-center border-2 border-card">
+            <Check size={11} className="text-primary-foreground" strokeWidth={3} />
+          </span>
+        )}
       </div>
 
-      <p className="flex-1 text-sm text-card-foreground leading-snug">{quest.title}</p>
+      <div className="flex-1 min-w-0">
+        <p className={`text-sm font-bold leading-snug ${completed ? 'text-primary' : 'text-card-foreground'}`}>
+          {quest.title}
+        </p>
+        <p className="text-xs text-muted-foreground leading-snug mt-0.5">{quest.description}</p>
+      </div>
 
       <input
         ref={inputRef}
@@ -43,17 +64,17 @@ export default function QuestCard({ quest, completed, uploading, onUpload }: Que
         type="button"
         disabled={uploading}
         onClick={() => inputRef.current?.click()}
-        className={`shrink-0 flex items-center justify-center w-10 h-10 rounded-full ${
-          completed ? 'bg-accent text-accent-foreground' : 'bg-muted text-muted-foreground'
+        className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-full ${
+          completed ? 'bg-primary/15 text-primary' : 'bg-muted text-muted-foreground'
         } active:scale-95 transition-transform disabled:opacity-50`}
         aria-label="사진 첨부"
       >
         {uploading ? (
-          <Loader2 size={18} className="animate-spin" />
+          <Loader2 size={16} className="animate-spin" />
         ) : completed ? (
-          <CheckCircle2 size={20} />
+          <Check size={16} />
         ) : (
-          <Camera size={18} />
+          <Camera size={16} />
         )}
       </button>
     </div>
