@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { Camera, Check, Loader2 } from 'lucide-react'
+import { Camera, Check, Loader2, RotateCcw } from 'lucide-react'
 import { Quest } from '../types'
 
 interface QuestCardProps {
@@ -60,23 +60,28 @@ export default function QuestCard({ quest, completed, photoUrl, uploading, onUpl
         onChange={handleFileChange}
       />
 
-      <button
-        type="button"
-        disabled={uploading}
-        onClick={() => inputRef.current?.click()}
-        className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-full ${
-          completed ? 'bg-primary/15 text-primary' : 'bg-muted text-muted-foreground'
-        } active:scale-95 transition-transform disabled:opacity-50`}
-        aria-label="사진 첨부"
-      >
-        {uploading ? (
-          <Loader2 size={16} className="animate-spin" />
-        ) : completed ? (
-          <Check size={16} />
-        ) : (
-          <Camera size={16} />
+      <div className="flex flex-col items-center gap-1 shrink-0">
+        <button
+          type="button"
+          disabled={uploading}
+          onClick={() => inputRef.current?.click()}
+          className={`flex items-center justify-center w-9 h-9 rounded-full ${
+            completed ? 'bg-primary/15 text-primary' : 'bg-muted text-muted-foreground'
+          } active:scale-95 transition-transform disabled:opacity-50`}
+          aria-label={completed ? '사진 다시 찍기' : '사진 첨부'}
+        >
+          {uploading ? (
+            <Loader2 size={16} className="animate-spin" />
+          ) : completed ? (
+            <RotateCcw size={15} />
+          ) : (
+            <Camera size={16} />
+          )}
+        </button>
+        {completed && !uploading && (
+          <span className="text-[9px] text-muted-foreground leading-none">다시찍기</span>
         )}
-      </button>
+      </div>
     </div>
   )
 }
