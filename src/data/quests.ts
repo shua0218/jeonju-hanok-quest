@@ -42,6 +42,6 @@ export const regionInfo = {
   region2: {
     label: '2구역',
     desc: '공예품전시관 · 오목대 · 전주향교',
-    image: '/region2-bg.jpg', // public 폴더에 저장한 2구역 배경 이미지 지정
+    image: '/region2-bg.jpg.webp', // public 폴더에 저장한 2구역 배경 이미지 지정
   },
 }
