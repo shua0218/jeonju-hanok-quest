@@ -39,7 +39,11 @@ export default function Region() {
             setShowPhoneModal(true)
           }
         },
-        onError: () => setUploadingId(null),
+        onError: (error) => {
+  console.error(error)
+  alert(JSON.stringify(error))
+  setUploadingId(null)
+},
       }
     )
   }
