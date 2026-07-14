@@ -37,11 +37,11 @@ export const regionInfo = {
   region1: {
     label: '1구역',
     desc: '완판본문화관 · 전주천 · 한벽문화관',
-    image: 'https://loremflickr.com/800/600/hanok,korea,traditional?lock=101',
+    image: '/region1-bg.jpg', // public 폴더에 저장한 1구역 배경 이미지 지정
   },
   region2: {
     label: '2구역',
     desc: '공예품전시관 · 오목대 · 전주향교',
-    image: 'https://loremflickr.com/800/600/hanok,korea,craft?lock=102',
+    image: '/region2-bg.jpg', // public 폴더에 저장한 2구역 배경 이미지 지정
   },
 }
