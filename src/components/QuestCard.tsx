@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 import { Camera, Check, Loader2, RotateCcw } from 'lucide-react'
 import { Quest } from '../types'
 
 interface QuestCardProps {
   quest: Quest
   completed: boolean
+  photoUrl?: string
   uploading: boolean
   onUpload: (file: File) => void
 }
@@ -12,44 +13,22 @@ interface QuestCardProps {
 export default function QuestCard({
   quest,
   completed,
+  photoUrl,
   uploading,
   onUpload,
 }: QuestCardProps) {
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const [photoUrl, setPhotoUrl] = useState<string>()
-
-  const storageKey = `quest-photo-${quest.id}`
-
-  useEffect(() => {
-    const saved = localStorage.getItem(storageKey)
-    if (saved) {
-      setPhotoUrl(saved)
-    }
-  }, [storageKey])
-
-  const fileToBase64 = (file: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = () => resolve(reader.result as string)
-      reader.onerror = reject
-      reader.readAsDataURL(file)
-    })
-
-  const handleFileChange = async (
+  const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = e.target.files?.[0]
 
     if (!file) return
 
-    const base64 = await fileToBase64(file)
-
-    localStorage.setItem(storageKey, base64)
-    setPhotoUrl(base64)
-
     onUpload(file)
 
+    // 같은 파일도 다시 선택할 수 있도록 초기화
     e.target.value = ''
   }
 
@@ -93,6 +72,7 @@ export default function QuestCard({
         >
           {quest.title}
         </p>
+
         <p className="text-xs text-muted-foreground leading-snug mt-0.5">
           {quest.description}
         </p>
