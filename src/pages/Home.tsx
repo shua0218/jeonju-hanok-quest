@@ -1,5 +1,7 @@
+
 import { Link } from 'react-router-dom'
 import { MapPin, Camera, Gift, ChevronRight } from 'lucide-react'
+import { regionInfo } from '../data/quests'
 
 const steps = [
   { icon: MapPin, title: '퀘스트 장소 방문', desc: '1구역 또는 2구역의\n퀘스트 장소를 방문하세요' },
@@ -8,20 +10,8 @@ const steps = [
 ]
 
 const regions = [
-  {
-    slug: 'region1',
-    name: '1구역',
-    desc: '완판본문화관 · 한벽문화관 · 전주천',
-    image: 'https://picsum.photos/seed/hanok1/800/600',
-    count: 10,
-  },
-  {
-    slug: 'region2',
-    name: '2구역',
-    desc: '공예품전시관 · 오목대 · 전주향교',
-    image: 'https://picsum.photos/seed/hanok2/800/600',
-    count: 10,
-  },
+  { slug: 'region1', ...regionInfo.region1, count: 10 },
+  { slug: 'region2', ...regionInfo.region2, count: 10 },
 ]
 
 export default function Home() {
@@ -29,8 +19,8 @@ export default function Home() {
     <div className="mobile-container bg-background flex flex-col">
       <div className="relative h-64 w-full overflow-hidden">
         <img
-          src="https://picsum.photos/seed/hanokhero/800/600"
-          alt="전주한옥마을"
+          src="https://loremflickr.com/800/600/hanok,sunset,korea?lock=100"
+          alt="전주한옥마을 노을"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
@@ -81,7 +71,7 @@ export default function Home() {
             >
               <img
                 src={region.image}
-                alt={region.name}
+                alt={region.label}
                 className="absolute inset-0 h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
@@ -92,7 +82,7 @@ export default function Home() {
 
               <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
                 <div>
-                  <p className="text-white font-bold text-lg leading-tight">{region.name}</p>
+                  <p className="text-white font-bold text-lg leading-tight">{region.label}</p>
                   <p className="text-white/80 text-[11px] mt-0.5">{region.desc}</p>
                 </div>
                 <ChevronRight className="text-white shrink-0" size={20} />
@@ -104,3 +94,4 @@ export default function Home() {
     </div>
   )
 }
+
