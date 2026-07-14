@@ -1,3 +1,4 @@
+
 import { Quest } from '../types'
 
 export const region1Quests: Quest[] = [
@@ -36,11 +37,11 @@ export const regionInfo = {
   region1: {
     label: '1구역',
     desc: '완판본문화관 · 전주천 · 한벽문화관',
-    image: 'https://picsum.photos/seed/hanok1/800/600',
+    image: 'https://loremflickr.com/800/600/hanok,korea,traditional?lock=101',
   },
   region2: {
     label: '2구역',
     desc: '공예품전시관 · 오목대 · 전주향교',
-    image: 'https://picsum.photos/seed/hanok2/800/600',
+    image: 'https://loremflickr.com/800/600/hanok,korea,craft?lock=102',
   },
 }
