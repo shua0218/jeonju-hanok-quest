@@ -1,46 +1,26 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { supabase } from '../lib/supabase'
 import { getDeviceId } from '../lib/device'
 import { RegionSlug, Submission } from '../types'
 
-const STORAGE_PREFIX = 'hanok_submissions'
-
-function storageKey(regionSlug: RegionSlug, deviceId: string) {
-  return `${STORAGE_PREFIX}_${deviceId}_${regionSlug}`
-}
-
-function readSubmissions(regionSlug: RegionSlug, deviceId: string): Submission[] {
-  try {
-    const raw = localStorage.getItem(storageKey(regionSlug, deviceId))
-    if (!raw) return []
-    return JSON.parse(raw) as Submission[]
-  } catch {
-    return []
-  }
-}
-
-function writeSubmissions(
-  regionSlug: RegionSlug,
-  deviceId: string,
-  submissions: Submission[]
-) {
-  localStorage.setItem(storageKey(regionSlug, deviceId), JSON.stringify(submissions))
-}
-
-function fileToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(reader.result as string)
-    reader.onerror = reject
-    reader.readAsDataURL(file)
-  })
-}
+const BUCKET = 'quest-photos'
 
 export function useSubmissions(regionSlug: RegionSlug) {
   const deviceId = getDeviceId()
 
   return useQuery({
     queryKey: ['submissions', regionSlug, deviceId],
-    queryFn: async (): Promise<Submission[]> => readSubmissions(regionSlug, deviceId),
+    queryFn: async (): Promise<Submission[]> => {
+      const { data, error } = await supabase
+        .from('submissions')
+        .select('*')
+        .eq('region_slug', regionSlug)
+        .eq('device_id', deviceId)
+        .order('created_at', { ascending: true })
+
+      if (error) throw error
+      return data as Submission[]
+    },
   })
 }
 
@@ -50,29 +30,48 @@ export function useUploadSubmission(regionSlug: RegionSlug) {
 
   return useMutation({
     mutationFn: async ({ questId, file }: { questId: number; file: File }) => {
-      const photoUrl = await fileToBase64(file)
+      const ext = file.name.split('.').pop() || 'jpg'
+      const path = `${deviceId}/${regionSlug}/quest-${questId}-${Date.now()}.${ext}`
 
-      const existing = readSubmissions(regionSlug, deviceId)
+      // 1. Storage에 사진 업로드 (관리자도 볼 수 있도록 공용 버킷에 저장)
+      const { error: uploadError } = await supabase.storage
+        .from(BUCKET)
+        .upload(path, file, {
+          cacheControl: '3600',
+          upsert: true,
+          contentType: file.type || 'image/jpeg',
+        })
 
-      // 사진 다시 찍기: 같은 퀘스트 기록이 있으면 새 사진으로 교체합니다.
-      const withoutCurrent = existing.filter((s) => s.quest_id !== questId)
+      if (uploadError) throw uploadError
 
-      const next: Submission[] = [
-        ...withoutCurrent,
-        {
-          id: crypto.randomUUID(),
-          device_id: deviceId,
-          quest_id: questId,
-          region_slug: regionSlug,
-          photo_url: photoUrl,
-          created_at: new Date().toISOString(),
-        },
-      ]
+      const { data: publicUrlData } = supabase.storage
+        .from(BUCKET)
+        .getPublicUrl(path)
 
-      writeSubmissions(regionSlug, deviceId, next)
+      const photoUrl = publicUrlData.publicUrl
+
+      // 2. 같은 퀘스트의 기존 제출 기록이 있으면 삭제 (다시 찍기 = 교체)
+      await supabase
+        .from('submissions')
+        .delete()
+        .eq('device_id', deviceId)
+        .eq('region_slug', regionSlug)
+        .eq('quest_id', questId)
+
+      // 3. 새 제출 기록 저장
+      const { error: insertError } = await supabase.from('submissions').insert({
+        device_id: deviceId,
+        quest_id: questId,
+        region_slug: regionSlug,
+        photo_url: photoUrl,
+      })
+
+      if (insertError) throw insertError
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['submissions', regionSlug, deviceId] })
+      queryClient.invalidateQueries({
+        queryKey: ['submissions', regionSlug, deviceId],
+      })
     },
   })
 }
